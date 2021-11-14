@@ -13,7 +13,7 @@ object DrawPng {
     val img: BufferedImage = new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_RGB)
 
     image.image.map {
-      case (Point(x, y), color) => img.setRGB(x, y, color)
+      case (Point(x, y), color) => img.setRGB(x, y, color.getRGB)
     }
 
     val os: ImageOutputStream = ImageIO.createImageOutputStream(file)
