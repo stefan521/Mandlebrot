@@ -1,3 +1,6 @@
 package view
 
-case class MandlebrotImage(width: Int, height: Int, image: Map[Point, Color])
+import java.awt.Color
+import scala.collection.parallel.immutable.ParMap
+
+case class MandlebrotImage(width: Int, height: Int, image: ParMap[Point, Int])

@@ -1,22 +1,29 @@
 package logic
 
-import MandlebrotLogic._
+import MandlebrotLogic.*
+
+import scala.annotation.tailrec
 
 class MandlebrotLogic(val maxIterations: Int) {
 
-  def escapesToInfinity(number: ComplexNumber): Boolean = number.modulus > 2;
+  def mandlebrotMember(numberToTest: ComplexNumber): MandlebrotMembership =
+    mandlebrotMemberLogic(numberToTest)(ComplexNumber(0, 0), 0)
 
-  def mandlebrotMember(number: ComplexNumber): MandlebrotMembership = {
-    var z = ComplexNumber(0, 0);
-    var n = 0;
+  @tailrec
+  private def mandlebrotMemberLogic(numberToTest: ComplexNumber)(numberInSequence: ComplexNumber, currentIterations: Int): MandlebrotMembership = {
 
-    while (!escapesToInfinity(z) && n < maxIterations) {
-      z = z * z + number
-      n += 1
-    }
-
-    NotMember(n)
+    if (escapesToInfinity(numberInSequence))
+      NotMember(currentIterations)
+    else if (currentIterations >= maxIterations)
+      Member(currentIterations)
+    else
+      mandlebrotMemberLogic(numberToTest)(nextInMandlebrotSequence(numberToTest, numberInSequence), currentIterations + 1)
   }
+
+  private def escapesToInfinity(number: ComplexNumber): Boolean = number.modulus > 2;
+
+  private def nextInMandlebrotSequence(startingNumber: ComplexNumber, currentNumber: ComplexNumber) =
+    currentNumber * currentNumber + startingNumber
 
 }
 
@@ -24,7 +31,7 @@ object MandlebrotLogic {
 
   sealed trait MandlebrotMembership
 
-  case object Member extends MandlebrotMembership
+  case class Member(iterations: Int) extends MandlebrotMembership
 
   /**
    *
